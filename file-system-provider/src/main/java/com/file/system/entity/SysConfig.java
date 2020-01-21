@@ -1,8 +1,5 @@
 package com.file.system.entity;
 
-import lombok.Data;
-
-@Data
 public class SysConfig {
     private Integer id;
 
@@ -10,4 +7,27 @@ public class SysConfig {
 
     private Integer privateReposEnable;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getRegEnable() {
+        return regEnable;
+    }
+
+    public void setRegEnable(Integer regEnable) {
+        this.regEnable = regEnable;
+    }
+
+    public Integer getPrivateReposEnable() {
+        return privateReposEnable;
+    }
+
+    public void setPrivateReposEnable(Integer privateReposEnable) {
+        this.privateReposEnable = privateReposEnable;
+    }
 }
