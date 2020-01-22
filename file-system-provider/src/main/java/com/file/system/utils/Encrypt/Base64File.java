@@ -3,9 +3,8 @@
  */
 package com.file.system.utils.Encrypt;
 
-import com.ibm.misc.BASE64Decoder;
-import util.DebugHelper;
-
+import cn.hutool.core.codec.Base64;
+import com.file.system.utils.DebugHelper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -63,23 +62,13 @@ public class Base64File {
 
 	/**
 	 * 将字符串解密
-	 * 
-	 * @param bytes
 	 * @return
 	 */
 	public static byte[] decode(String data) {
 		if (null == data) {
 			return null;
 		}
-		BASE64Decoder decoder = new BASE64Decoder();
-		try {
-			byte[] ret = decoder.decodeBuffer(data);
-			return ret;
-		} catch (Exception e) {
-			DebugHelper.print(e.toString());
-			return null;
-		}
-
+		return  Base64.decode(data);
 	}
 
 }

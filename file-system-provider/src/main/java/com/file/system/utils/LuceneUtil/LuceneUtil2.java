@@ -3,10 +3,11 @@
  */
 package com.file.system.utils.LuceneUtil;
 
-import com.DocSystem.common.BaseFunction;
-import com.DocSystem.common.HitDoc;
-import com.DocSystem.entity.Doc;
-import com.DocSystem.entity.Repos;
+import com.file.system.common.BaseFunction;
+import com.file.system.common.HitDoc;
+import com.file.system.entity.Doc;
+import com.file.system.entity.Repos;
+import com.file.system.utils.FileUtil.FileUtils2;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -39,7 +40,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.wltea.analyzer.lucene.IKAnalyzer;
-import util.FileUtil.FileUtils2;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -81,11 +81,6 @@ public class LuceneUtil2   extends BaseFunction
 	 *
 	 * 功能: 在指定的索引库里增加索引文件
      * @param content 
-     * @param id: lucene document id 在当前索引库具有唯一性（使用 HashId_index来标识），以便更新索引时能够快速查找到，多个id可以对应一个相同的文件（文件内容过多无法一次性建立索引的情况） 
-     * @param reposId:  文件所在仓库ID 
-     * @param parentPath:  文件所在目录 
-     * @param name:  文件名
-     * @param docId:  docId of DocSys In DataBase 
      * @param content: 文件名、文件内容或备注内容
      * @param indexLib: 索引库名字（不同仓库将使用不同的索引库，便于整个仓库重建索引或删除时操作方便）
 	 * @return 
@@ -236,12 +231,6 @@ public class LuceneUtil2   extends BaseFunction
 
 	/**
 	 * 功能: 在指定的索引库里更新索引文件
-	 * @param indexLib2 
-     * @param id: lucene document id 在当前索引库具有唯一性（使用 HashId_index来标识），以便更新索引时能够快速查找到，多个id可以对应一个相同的文件（文件内容过多无法一次性建立索引的情况） 
-     * @param reposId:  文件所在仓库ID 
-     * @param parentPath:  文件所在目录 
-     * @param name:  文件名
-     * @param docId:  docId of DocSys In DataBase 
      * @param content: 文件名、文件内容或备注内容
      * @param indexLib: 索引库名字（不同仓库将使用不同的索引库，便于整个仓库重建索引或删除时操作方便）
 	 * @return 
@@ -268,7 +257,7 @@ public class LuceneUtil2   extends BaseFunction
 	        
 	        indexWriter.updateDocument(new Term("docId",doc.getDocId()+""), document);
 	        indexWriter.commit();
-	        
+
 	        indexWriter.close();
 	        indexWriter = null;
 	        directory.close();
@@ -290,8 +279,7 @@ public class LuceneUtil2   extends BaseFunction
     /**
      * 	删除索引
      * 
-     * @param id: lucene document id
-     * @return 
+     * @return
      * @throws Exception
      */
     public static boolean deleteIndex(Doc doc, String indexLib)
@@ -330,9 +318,7 @@ public class LuceneUtil2   extends BaseFunction
 
     /**
      * 	关键字模糊查询， 返回docId List
-     * @param weight 
-     * @param parentPath 
-     * @param <SearchResult>
+     * @param weight
      * @param str: 关键字
      * @param indexLib: 索引库名字
      */
@@ -556,7 +542,6 @@ public class LuceneUtil2   extends BaseFunction
 	/**
 	 * 	根据docId查询idList，返回idList
      * 
-     * @param docId: DocSys doc id
      * @param indexLib: 索引库名字
      */
     public static List<String> getDocumentIdListByHashId(String hashId, String indexLib)
@@ -1068,10 +1053,6 @@ public class LuceneUtil2   extends BaseFunction
 	
     /**
      * 	关键字模糊查询， 返回docId List
-     * @param weight 
-     * @param parentPath 
-     * @param <SearchResult>
-     * @param str: 关键字
      * @param indexLib: 索引库名字
      */
 	public static List<Doc> multiQueryForDoc(Repos repos, List<String> fileds, List<String> strs, String indexLib)

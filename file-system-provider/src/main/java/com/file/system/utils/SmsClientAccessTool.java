@@ -28,7 +28,7 @@ public class SmsClientAccessTool {
 	 * 
 	 * @param sendUrl
 	 *            ：访问URL
-	 * @param paramStr
+	 * @param sendParam
 	 *            ：参数串
 	 * @param backEncodType
 	 *            ：返回的编码

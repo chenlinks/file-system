@@ -1,6 +1,6 @@
 package com.file.system.utils.FileUtil;
 
-import info.monitorenter.cpdetector.io.*;
+import cn.hutool.core.io.FileTypeUtil;
 import org.apache.poi.poifs.filesystem.FileMagic;
 
 import java.io.*;
@@ -145,25 +145,7 @@ public class FileUtils2 {
     }
     
     public static String getFileEncode(String filePath) {
-        String charsetName = null;
-        try {
-            File file = new File(filePath);
-            CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
-            detector.add(new ParsingDetector(false));
-            detector.add(JChardetFacade.getInstance());
-            detector.add(ASCIIDetector.getInstance());
-            detector.add(UnicodeDetector.getInstance());
-            java.nio.charset.Charset charset = null;
-            charset = detector.detectCodepage(file.toURI().toURL());
-            if (charset != null) {
-                charsetName = charset.name();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        //System.out.println("getFileEncode() " + charsetName);
-        return charsetName;
+            return  FileTypeUtil.getTypeByPath(filePath);
     }
     
     public static FileMagic getFileMagic(String filePath) throws Exception {

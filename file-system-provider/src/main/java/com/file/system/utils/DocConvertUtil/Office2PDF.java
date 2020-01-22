@@ -1,9 +1,14 @@
 package com.file.system.utils.DocConvertUtil;
 
-import org.artofsolving.jodconverter.OfficeDocumentConverter;
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
-import org.artofsolving.jodconverter.office.OfficeManager;
-import util.ReturnAjax;
+import cn.hutool.log.LogFactory;
+import com.file.system.utils.ReturnAjax;
+import jdk.internal.jline.internal.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.jodconverter.LocalConverter;
+import org.jodconverter.OfficeDocumentConverter;
+import org.jodconverter.office.LocalOfficeManager;
+import org.jodconverter.office.OfficeException;
+import org.jodconverter.office.OfficeManager;
 
 import java.io.File;
 
@@ -11,12 +16,10 @@ import java.io.File;
  * 这是一个工具类，主要是为了使Office2003-2007全部格式的文档(.doc|.docx|.xls|.xlsx|.ppt|.pptx)
  * 转化为pdf文件<br>
  * Office2010的没测试<br>
- * 
- * @date 2017-03-03
- * @author jjc
- * 
  */
 public class Office2PDF {
+
+
     /**
      * 使Office2003-2007全部格式的文档(.doc|.docx|.xls|.xlsx|.ppt|.pptx) 转化为pdf文件<br>
      * 
@@ -35,12 +38,14 @@ public class Office2PDF {
      * @return
      */
     public static OfficeManager getOfficeManager(String officeHome) {
-        DefaultOfficeManagerConfiguration config = new DefaultOfficeManagerConfiguration();
-        // 设置OpenOffice.org 3的安装目录
-        config.setOfficeHome(officeHome);
-        // 启动OpenOffice的服务
-        OfficeManager officeManager = config.buildOfficeManager();
-        officeManager.start();
+
+        LocalOfficeManager officeManager = LocalOfficeManager.builder().officeHome(officeHome).build();
+        try {
+            officeManager.start();
+        } catch (OfficeException e) {
+            e.printStackTrace();
+            Log.error(e.getMessage(),e);
+        }
         return officeManager;
     }
 
@@ -50,7 +55,6 @@ public class Office2PDF {
      * @param inputFile
      * @param outputFilePath_end
      * @param inputFilePath
-     * @param outputFilePath
      * @param converter
      */
     public static boolean converterFile(File inputFile, String outputFilePath_end, String inputFilePath,
@@ -60,8 +64,12 @@ public class Office2PDF {
         if (!outputFile.getParentFile().exists()) {
             outputFile.getParentFile().mkdirs();
         }
-        
-        converter.convert(inputFile, outputFile);
+
+        try {
+            converter.convert(inputFile, outputFile);
+        } catch (OfficeException e) {
+            e.printStackTrace();
+        }
         System.out.println("文件 " + inputFilePath + "转换为 目标文件:" + outputFile + " 成功!");
         return true;
     }
@@ -96,7 +104,7 @@ public class Office2PDF {
     	try {
     		officeManager = getOfficeManager(officeHome);
     		// 连接OpenOffice
-        	OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+            OfficeDocumentConverter converter = new  OfficeDocumentConverter(officeManager);
         	boolean ret = converterFile(inputFile, outputFilePath, inputFilePath, converter);
         	officeManager.stop();
         	officeManager = null;
@@ -105,8 +113,12 @@ public class Office2PDF {
     		rt.setError("文件转换异常!");
     		if(officeManager != null)
     		{
-	        	officeManager.stop();
-    		}
+                try {
+                    officeManager.stop();
+                } catch (OfficeException ex) {
+                    ex.printStackTrace();
+                }
+            }
     		System.out.println("office2pdf() getOfficeManager Exception");
 			e.printStackTrace();
 			return false;

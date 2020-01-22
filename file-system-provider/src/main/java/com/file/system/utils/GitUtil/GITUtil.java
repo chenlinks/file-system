@@ -1,14 +1,12 @@
 package com.file.system.utils.GitUtil;
 
-import com.DocSystem.common.CommitAction;
-import com.DocSystem.common.CommitAction.CommitType;
-import com.DocSystem.common.DocChange;
-import com.DocSystem.common.DocChange.DocChangeType;
-import com.DocSystem.controller.BaseController;
-import com.DocSystem.entity.ChangedItem;
-import com.DocSystem.entity.Doc;
-import com.DocSystem.entity.LogEntry;
-import com.DocSystem.entity.Repos;
+import com.file.system.common.CommitAction;
+import com.file.system.common.DocChange;
+import com.file.system.controller.BaseController;
+import com.file.system.entity.ChangedItem;
+import com.file.system.entity.Doc;
+import com.file.system.entity.LogEntry;
+import com.file.system.entity.Repos;
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.RebaseCommand.Operation;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
@@ -39,7 +37,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class GITUtil  extends BaseController{
+public class GITUtil  extends BaseController {
     //For Low Level APIs
 	private String repositoryURL = null;
 	private String user = null;
@@ -53,7 +51,7 @@ public class GITUtil  extends BaseController{
     Repository repository = null;
     RevWalk walk = null;
     
-	public boolean Init(Repos repos,boolean isRealDoc, String commitUser) {
+	public boolean Init(Repos repos, boolean isRealDoc, String commitUser) {
     	String localVerReposPath = getLocalVerReposPath(repos,isRealDoc);
     	System.out.println("GITUtil Init() localVerReposPath:" + localVerReposPath);
 		
@@ -1319,7 +1317,7 @@ public class GITUtil  extends BaseController{
 		    			DocChange docChange = localChanges.get(doc.getDocId());
 		    			if(docChange != null)
 		    			{
-		    				if(docChange.getType() == DocChangeType.LOCALCHANGE)
+		    				if(docChange.getType() == DocChange.DocChangeType.LOCALCHANGE)
 		    				{
 			            		System.out.println("doAutoCommit() 文件内容变更（localChanges）:" + doc.getDocId() + " " + doc.getPath() + doc.getName());
 			            		insertModifyAction(commitActionList,doc);
@@ -1991,7 +1989,7 @@ public class GITUtil  extends BaseController{
     	{
     		CommitAction action = commitActionList.get(i);
     		Doc doc = action.getDoc();
-    		if(CommitType.ADD == action.getAction()) //add
+    		if(CommitAction.CommitType.ADD == action.getAction()) //add
     		{
         		delFileOrDir(wcDir + doc.getPath() + doc.getName());
     		}
@@ -2235,7 +2233,7 @@ public class GITUtil  extends BaseController{
     			DocChange docChange = localChanges.get(doc.getDocId());
     			if(docChange != null)
     			{
-    				if(docChange.getType() == DocChangeType.LOCALCHANGE)
+    				if(docChange.getType() == DocChange.DocChangeType.LOCALCHANGE)
     				{
 	        			System.out.println("scheduleForCommit() insert " + entryPath + " to actionList for Modify" );
 	            		insertModifyAction(actionList,doc);

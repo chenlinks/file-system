@@ -1,7 +1,7 @@
 package com.file.system.utils;
 
-import com.DocSystem.entity.MyEmail;
 
+import com.file.system.entity.MyEmail;
 import javax.mail.Authenticator;
 import javax.mail.Message.RecipientType;
 import javax.mail.PasswordAuthentication;

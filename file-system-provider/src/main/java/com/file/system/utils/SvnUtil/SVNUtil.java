@@ -1,18 +1,18 @@
 package com.file.system.utils.SvnUtil;
 
-import com.DocSystem.common.CommitAction;
-import com.DocSystem.common.DocChange;
-import com.DocSystem.common.DocChange.DocChangeType;
-import com.DocSystem.controller.BaseController;
-import com.DocSystem.entity.ChangedItem;
-import com.DocSystem.entity.Doc;
-import com.DocSystem.entity.LogEntry;
-import com.DocSystem.entity.Repos;
+import com.file.system.common.CommitAction;
+import com.file.system.common.DocChange;
+import com.file.system.controller.BaseController;
+import com.file.system.entity.ChangedItem;
+import com.file.system.entity.Doc;
+import com.file.system.entity.LogEntry;
+import com.file.system.entity.Repos;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.internal.wc.SVNProperties;
 import org.tmatesoft.svn.core.io.ISVNEditor;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
@@ -22,7 +22,7 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import java.io.*;
 import java.util.*;
 
-public class SVNUtil  extends BaseController{
+public class SVNUtil  extends BaseController {
 	
 	//For Low Level APIs
 	private SVNRepository repository = null;
@@ -30,9 +30,7 @@ public class SVNUtil  extends BaseController{
 
 	/***
      * SVNUtil初始化方法：需要指定此次操作的SVN路径、用户名和密码
-     * @param reposURL
-     * @param userName
-     * @param password
+     * @param repsword
      */
     @SuppressWarnings("deprecation")
 	public boolean Init(Repos repos, boolean isRealDoc, String commitUser)

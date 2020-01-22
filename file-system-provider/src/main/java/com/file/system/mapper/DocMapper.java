@@ -2,6 +2,7 @@ package com.file.system.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.file.system.entity.Doc;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.HashMap;

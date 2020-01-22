@@ -1,5 +1,6 @@
 package com.file.system.utils.LuceneUtil;
 
+import com.file.system.utils.ReadProperties;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
@@ -17,7 +18,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.wltea.analyzer.lucene.IKAnalyzer;
-import util.ReadProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,7 +177,7 @@ public class LuceneUtil extends Thread {
 	
 	//统一设定Lucene版本号
 	private Version currentVersion = Version.LUCENE_46;
-	
+
 	//统一设定分词器为第三方中文分词器
 	private IKAnalyzer analyzer = new IKAnalyzer();
 	

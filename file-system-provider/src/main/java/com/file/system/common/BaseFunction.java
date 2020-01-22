@@ -26,6 +26,8 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Zip;
 import org.apache.tools.ant.types.FileSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,12 +49,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public class BaseFunction{
+
+	private  static Logger log = LoggerFactory.getLogger(BaseFunction.class);
+
+
 	protected String ROWS_PER_PAGE;// 每页显示的记录数
 	protected String curPage;// 当前第几页
 
 	/******************************** Basic Interface for docSys *************************************/
 	protected void docSysDebugLog(String logStr, ReturnAjax rt) {
-		System.out.println(logStr);
+		log.info(logStr);
 		if(rt != null)
 		{
 			rt.setDebugLog(logStr);
@@ -60,7 +66,7 @@ public class BaseFunction{
 	}
 
 	protected void docSysWarningLog(String logStr, ReturnAjax rt) {
-		System.err.println(logStr);
+		log.error(logStr);
 		if(rt != null)
 		{
 			rt.setWarningMsg(logStr);
@@ -68,7 +74,7 @@ public class BaseFunction{
 	}
 
 	protected void docSysErrorLog(String logStr, ReturnAjax rt) {
-		System.err.println(logStr);
+		log.error(logStr);
 		if(rt != null)
 		{
 			rt.setError(logStr);
@@ -87,7 +93,7 @@ public class BaseFunction{
 		action.setAction(actionType);
 		action.setDocType(docType);
 
-		System.out.println("insertCommonAction actionType:" + action.getAction() + " docType:" + action.getDocType() + " actionId:" + action.getType() + " doc:"+ srcDoc.getDocId() + " " + srcDoc.getPath() + srcDoc.getName());
+		log.info("insertCommonAction actionType:" + action.getAction() + " docType:" + action.getDocType() + " actionId:" + action.getType() + " doc:"+ srcDoc.getDocId() + " " + srcDoc.getPath() + srcDoc.getName());
 		
 		action.setRepos(repos);
 		action.setDoc(srcDoc);
@@ -116,7 +122,7 @@ public class BaseFunction{
 		UniqueAction uniqueAction = uniqueActionHashMap.get(reposId);
 		if(uniqueAction == null)
 		{
-			System.out.println("insertCommonAction create uniqueAction for repos:" + reposId);
+			log.info("insertCommonAction create uniqueAction for repos:" + reposId);
 			UniqueAction newUniqueAction = new UniqueAction();
 			uniqueActionHashMap.put(reposId, newUniqueAction);
 			uniqueAction = newUniqueAction;
@@ -125,11 +131,11 @@ public class BaseFunction{
 		ConcurrentHashMap<Long, CommonAction> uniqueCommonActionHashMap = uniqueAction.getUniqueCommonActionHashMap();
 		List<CommonAction> uniqueCommonActionList = uniqueAction.getUniqueCommonActionList();
 
-		System.out.println("insertCommonAction actionType:" + action.getAction() + " docType:" + action.getDocType() + " actionId:" + action.getType() + " doc:"+ srcDoc.getDocId() + " " + srcDoc.getPath() + srcDoc.getName());
+		log.info("insertCommonAction actionType:" + action.getAction() + " docType:" + action.getDocType() + " actionId:" + action.getType() + " doc:"+ srcDoc.getDocId() + " " + srcDoc.getPath() + srcDoc.getName());
 		CommonAction tempAction = uniqueCommonActionHashMap.get(srcDoc.getDocId());
 		if(tempAction != null && tempAction.getType() == action.getType() && tempAction.getAction() == action.getAction() && tempAction.getDocType() == action.getDocType())
 		{
-			System.out.println("insertCommonAction action for doc:"+ srcDoc.getDocId() + " [" + srcDoc.getPath() + srcDoc.getName() + "] alreay in uniqueActionList");
+			log.info("insertCommonAction action for doc:"+ srcDoc.getDocId() + " [" + srcDoc.getPath() + srcDoc.getName() + "] alreay in uniqueActionList");
 			return false;
 		}
 		
@@ -319,7 +325,7 @@ public class BaseFunction{
 			return vDoc;
 		}
 		
-		System.out.println("buildVDoc() doc already is VDoc");
+		log.info("buildVDoc() doc already is VDoc");
 		return doc;
 	}
 	
@@ -345,7 +351,7 @@ public class BaseFunction{
 		String[] paths = entryPath.split("/");
 		
 		int deepth = paths.length;
-		System.out.println("seperatePathAndName() deepth:" + deepth);
+		log.info("seperatePathAndName() deepth:" + deepth);
 		
 		String path = "";
 		String name = "";
@@ -417,7 +423,7 @@ public class BaseFunction{
     	//get OpenOffice Home From Config File
     	String officeHome = null;
         String osName = System.getProperty("os.name");
-        //System.out.println("操作系统名称:" + osName);
+        //log.info("操作系统名称:" + osName);
         
         if (Pattern.matches("Linux.*", osName))
         {
@@ -581,7 +587,7 @@ public class BaseFunction{
 		{
 			reposRPath = getReposPath(repos) + "data/rdata/";	//实文件系统的存储数据放在data目录下 
 		}
-		//System.out.println("getReposRealPath() " + reposRPath);
+		//log.info("getReposRealPath() " + reposRPath);
 		return reposRPath;
 	}
 	
@@ -589,7 +595,7 @@ public class BaseFunction{
 	protected static String getReposVirtualPath(Repos repos)
 	{
 		String reposVPath = getReposPath(repos) + "data/vdata/";	//实文件系统的存储数据放在data目录下
-		//System.out.println("getReposVirtualPath() " + reposVPath);
+		//log.info("getReposVirtualPath() " + reposVPath);
 		return reposVPath;
 	}
 	
@@ -606,7 +612,7 @@ public class BaseFunction{
 	protected static String getHashId(String path)
 	{
 		String hashId = MD5.md5(path);
-		System.out.println("getHashId() " + hashId + " for " + path);
+		log.info("getHashId() " + hashId + " for " + path);
 		return hashId;
 	}
 	
@@ -659,7 +665,7 @@ public class BaseFunction{
         
         String webUserTmpPath =  wac.getServletContext().getRealPath("/") +  "tmp/" + login_user.getId() + "/";
         webUserTmpPath = localDirPathFormat(webUserTmpPath);
-        System.out.println("getWebUserTmpPath() webUserTmpPath:" + webUserTmpPath);
+        log.info("getWebUserTmpPath() webUserTmpPath:" + webUserTmpPath);
 		return webUserTmpPath;
 	}
 
@@ -668,7 +674,7 @@ public class BaseFunction{
 		String webPath = getWebPath();
         webPath = localDirPathFormat(webPath);
         String webParentPath = webPath + "../";
-        System.out.println("getWebAppPath() webParentPath:" + webParentPath);
+        log.info("getWebAppPath() webParentPath:" + webParentPath);
 		return webPath;
 	}
 
@@ -679,7 +685,7 @@ public class BaseFunction{
         
         String webPath =  wac.getServletContext().getRealPath("/");
         webPath = localDirPathFormat(webPath);
-        System.out.println("getWebPath() webPath:" + webPath);
+        log.info("getWebPath() webPath:" + webPath);
 		return webPath;
 	}
 	
@@ -689,7 +695,7 @@ public class BaseFunction{
         
         String webTmpPath =  wac.getServletContext().getRealPath("/") +  "tmp/";
         webTmpPath = localDirPathFormat(webTmpPath);
-        System.out.println("getWebTmpPath() webTmpPath:" + webTmpPath);
+        log.info("getWebTmpPath() webTmpPath:" + webTmpPath);
 		return webTmpPath;
 	}
 	
@@ -698,7 +704,7 @@ public class BaseFunction{
         
         String webTmpPath =  wac.getServletContext().getRealPath("/") +  "tmp/preview/";
         webTmpPath = localDirPathFormat(webTmpPath);
-        System.out.println("getWebTmpPathForPreview() webTmpPath:" + webTmpPath);
+        log.info("getWebTmpPathForPreview() webTmpPath:" + webTmpPath);
 		return webTmpPath;
 	}
 	
@@ -856,12 +862,12 @@ public class BaseFunction{
 	 * @param weight *******************************************/
 	protected static void AddHitDocToSearchResult(HashMap<String, HitDoc> searchResult, HitDoc hitDoc, String keyWord, int weight)
 	{
-		//System.out.println("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " searchWord:" + keyWord);
+		//log.info("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " searchWord:" + keyWord);
 		HitDoc tempHitDoc = searchResult.get(hitDoc.getDocPath());
 
 		if(tempHitDoc == null)
 		{
-			//System.out.println("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " is the first hit result for searchWord:" + keyWord);	
+			//log.info("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " is the first hit result for searchWord:" + keyWord);	
 			Doc doc = hitDoc.getDoc();
 			
 			//Create hitIfo
@@ -887,7 +893,7 @@ public class BaseFunction{
 			int sortIndex = doc.getSortIndex();
 			if(hitCount == null)
 			{
-				//System.out.println("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " is the first hit result for searchWord:" + keyWord);	
+				//log.info("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " is the first hit result for searchWord:" + keyWord);	
 				hitInfo.put(keyWord, 1);
 				sortIndex = sortIndex + weight*100 + 1;
 				doc.setSortIndex(sortIndex);
@@ -895,12 +901,12 @@ public class BaseFunction{
 			else
 			{
 				hitCount++;	//hitCount++
-				//System.out.println("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " is "+ hitCount +"th hit result for searchWord:" + keyWord);	
+				//log.info("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " is "+ hitCount +"th hit result for searchWord:" + keyWord);	
 				hitInfo.put(keyWord, hitCount+1);
 				sortIndex = sortIndex + 1;
 				doc.setSortIndex(sortIndex);
 			}
-			//System.out.println("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " sortIndex:" + doc.getSortIndex());	
+			//log.info("AddHitDocToSearchResult() docPath:" + hitDoc.getDocPath() + " sortIndex:" + doc.getSortIndex());	
 
 			//Java默认是引用，所以下面的操作是不需要的
 			//tempHitDoc.setHitInfo(hitInfo);
@@ -926,7 +932,7 @@ public class BaseFunction{
 			pw.flush();
 			pw.close();
 		} catch (IOException e) {
-			System.out.println("BaseController>writeJson  ERROR!");
+			log.info("BaseController>writeJson  ERROR!");
 			e.printStackTrace();
 		}
 		
@@ -948,7 +954,7 @@ public class BaseFunction{
 			pw.flush();
 			pw.close();
 		} catch (IOException e) {
-			System.out.println("BaseController>writeJson  ERROR!");
+			log.info("BaseController>writeJson  ERROR!");
 			e.printStackTrace();
 		}
 		
@@ -1023,7 +1029,7 @@ public class BaseFunction{
 		if(fileSize==0){
 			return null;
 		}
-		System.out.println("文件大小：" + Math.floor(fileSize/1024));
+		log.info("文件大小：" + Math.floor(fileSize/1024));
 		if(limitType){
 			if(fileSize>200*1024*1024){
 				throw new FileUploadException("上传文件过大");
@@ -1075,7 +1081,7 @@ public class BaseFunction{
 		ReturnAjax rt = new ReturnAjax();
 		String ext = fileName.substring(fileName.lastIndexOf("."));
 		long fileSize = file.length();
-		System.out.println("文件大小：" + Math.floor(fileSize/1024));
+		log.info("文件大小：" + Math.floor(fileSize/1024));
 		if(fileSize==0){
 			return null;
 		}
@@ -1100,7 +1106,7 @@ public class BaseFunction{
 		try {
 			String _fileName = generateDateAndRadom() + ext;
 			Base64File.decode(file, folder + File.separator, _fileName);
-			System.out.println("上传路径："+folder+";上传名称：" + _fileName);
+			log.info("上传路径："+folder+";上传名称：" + _fileName);
 			//压缩图片到smallPic目录
 			if(limitType&&folder!=null&&!folder.equals("")&&compressPath!=null&&!compressPath.equals("")){
 				CompressPic cp = new CompressPic();
@@ -1123,7 +1129,7 @@ public class BaseFunction{
 		Date date = new Date();
 		String dateStr = DateFormat.dateTimeFormat2(date);
 		String r = Math.round(Math.random()*100000)+"";
-		System.out.println(dateStr+";"+r);
+		log.info(dateStr+";"+r);
 		return "freeteam"+dateStr+"_"+r;
 	}
 	
@@ -1165,7 +1171,7 @@ public class BaseFunction{
 			return str;
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
-			System.out.println("base64Decode new String Error");
+			log.info("base64Decode new String Error");
 			e.printStackTrace();
 			return null;
 		}
@@ -1208,7 +1214,7 @@ public class BaseFunction{
 		String str;
 		try {
 			str = new String(bytes, encode);
-			System.out.println("checkEncoding() str:" + str);
+			log.info("checkEncoding() str:" + str);
 	        if(Arrays.equals(str.getBytes(), bytes))
 			{   
 	        	return true;    
@@ -1244,7 +1250,7 @@ public class BaseFunction{
     	
         File srcdir = new File(srcPathName); //srcFile or Dir
         if (!srcdir.exists()){
-        	System.out.println(srcPathName + "不存在！");
+        	log.info(srcPathName + "不存在！");
         	return false;
         }   
             
@@ -1271,17 +1277,17 @@ public class BaseFunction{
 	{	
 		if(content == null)
 		{
-			System.out.println("saveDocContentToFile() content is null");
+			log.info("saveDocContentToFile() content is null");
 			return false;
 		}
 		
 		File folder = new File(path);
 		if(!folder.exists())
 		{
-			//System.out.println("saveDocContentToFile() path:" + path + " not exists!");
+			//log.info("saveDocContentToFile() path:" + path + " not exists!");
 			if(folder.mkdirs() == false)
 			{
-				System.out.println("saveDocContentToFile() mkdir path:" + path + " Failed!");
+				log.info("saveDocContentToFile() mkdir path:" + path + " Failed!");
 				return false;
 			}
 		}
@@ -1292,7 +1298,7 @@ public class BaseFunction{
 		try {
 			out = new FileOutputStream(filePath);
 		} catch (FileNotFoundException e) {
-			System.out.println("saveVirtualDocContent() new FileOutputStream failed");
+			log.info("saveVirtualDocContent() new FileOutputStream failed");
 			e.printStackTrace();
 			return false;
 		}
@@ -1302,7 +1308,7 @@ public class BaseFunction{
 			//关闭输出流
 			out.close();
 		} catch (IOException e) {
-			System.out.println("saveVirtualDocContent() out.write exception");
+			log.info("saveVirtualDocContent() out.write exception");
 			e.printStackTrace();
 			return false;
 		}		
@@ -1318,12 +1324,12 @@ public class BaseFunction{
 			File file = new File(filePath);
 			if(!file.exists() || !file.isFile())
 			{
-				System.out.println("readDocContentFromFile " +filePath+ " 不存在或不是文件");
+				log.info("readDocContentFromFile " +filePath+ " 不存在或不是文件");
 				return null;
 			}
 			
 			int fileSize = (int) file.length();
-			//System.out.println("fileSize:[" + fileSize + "]");
+			//log.info("fileSize:[" + fileSize + "]");
 			if(fileSize  <= 0)
 			{
 				return null;
@@ -1341,7 +1347,7 @@ public class BaseFunction{
 			if(encodeDetectEnable)
 			{
 				encode = getEncodeOfBuffer(buffer, fileSize);
-				System.out.println("readDocContentFromFile " +filePath+ " encode:" + encode);
+				log.info("readDocContentFromFile " +filePath+ " encode:" + encode);
 			}	
 			if(encode == null)
 			{
@@ -1351,7 +1357,7 @@ public class BaseFunction{
 			{
 				content = new String(buffer, encode);
 			}
-			//System.out.println("content:[" + content + "]");
+			//log.info("content:[" + content + "]");
 			return content;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1381,7 +1387,7 @@ public class BaseFunction{
 		}
 		System.arraycopy(buffer, 0, encodeDetectBuf, 0, encodeDetectBufLen);
 		String encode = getEncoding(encodeDetectBuf);
-		System.out.println("getEncodeOfBuffer encode:[" + encode + "]");
+		log.info("getEncodeOfBuffer encode:[" + encode + "]");
 
 		return encode;
 	}
@@ -1390,7 +1396,7 @@ public class BaseFunction{
         File srcFile=new File(srcFilePath);
         if(srcFile.exists() == false)
         {
-    		System.err.println("copyFile() srcFilePath:" + srcFilePath + " not exists!");
+    		log.error("copyFile() srcFilePath:" + srcFilePath + " not exists!");
     		return false;
         }
 
@@ -1398,7 +1404,7 @@ public class BaseFunction{
     	if(cover == false && dstFile.exists())
     	{
         	//不允许覆盖
-        	System.err.println("copyFile() " + dstFilePath + " exists!");
+        	log.error("copyFile() " + dstFilePath + " exists!");
         	return false;
         }
         
@@ -1422,7 +1428,7 @@ public class BaseFunction{
 		    ret = true;
         }
     	catch (Exception e) {
-    		System.err.println("copyFile() from " + srcFilePath + " to " + dstFilePath + " Exception");
+    		log.error("copyFile() from " + srcFilePath + " to " + dstFilePath + " Exception");
     		e.printStackTrace(); 
     	} finally {
 			try {
@@ -1453,11 +1459,11 @@ public class BaseFunction{
     //strict: true there is not file and dir, false: there is no file
 	public boolean isEmptyDir(String dirPath, boolean strict)
 	{
-		System.out.println("isEmptyDir() dirPath:" + dirPath);
+		log.info("isEmptyDir() dirPath:" + dirPath);
 		File dir = new File(dirPath);
 		if(isEmptyDir(dir, strict) == true)
 		{
-			System.out.println("isEmptyDir() " + dirPath + " 是空目录");
+			log.info("isEmptyDir() " + dirPath + " 是空目录");
 			return true;
 		}
 		return false;
@@ -1502,7 +1508,7 @@ public class BaseFunction{
 	    	File srcDir = new File(srcPath);
 	    	if(srcDir.exists() == false)
 	    	{
-    			System.err.println("copyDir() srcPath not exists:"+srcPath);
+    			log.error("copyDir() srcPath not exists:"+srcPath);
     			return false;	    				    		
 	    	}
 	    	
@@ -1512,7 +1518,7 @@ public class BaseFunction{
 	    	{
 	    		if(cover == false)
 	    		{
-	    			System.err.println("copyDir() dstPath exists:"+dstPath);
+	    			log.error("copyDir() dstPath exists:"+dstPath);
 	    			return false;	    			
 	    		}
 	    	}
@@ -1521,7 +1527,7 @@ public class BaseFunction{
 	    		//mkdirs will create the no exists parent dir, so I use the mkdir
 	    		if(dstDir.mkdir() == false)
 	    		{
-	    			System.err.println("copyDir() Failed to create dir:"+dstPath);
+	    			log.error("copyDir() Failed to create dir:"+dstPath);
 	    			return false;
 	    		}
 	    	}
@@ -1556,7 +1562,7 @@ public class BaseFunction{
 	    } 
 	    catch (Exception e)
 	    { 
-	    	System.err.println("copyDir from " + srcPath  + " to " + dstPath + " 异常");
+	    	log.error("copyDir from " + srcPath  + " to " + dstPath + " 异常");
 	    	e.printStackTrace(); 
 	    	return false;
 	    }
@@ -1571,7 +1577,7 @@ public class BaseFunction{
 	    {
 	    	if(cover == false)
 	    	{
-	    		System.out.println("copyFileOrDir() dstPath exists:"+dstPath);
+	    		log.info("copyFileOrDir() dstPath exists:"+dstPath);
 	    		return false;	    			
 	    	}
 	    }
@@ -1581,7 +1587,7 @@ public class BaseFunction{
 	    {
 	    	if(false == copyFile(srcPath, dstPath, cover))
 	    	{
-	    		System.out.println("copyFileOrDir() copyFile Failed:"+dstPath);
+	    		log.info("copyFileOrDir() copyFile Failed:"+dstPath);
 		    	return false;
 	    	}
 	    }
@@ -1589,7 +1595,7 @@ public class BaseFunction{
 	    {
 	    	if(false == copyDir(srcPath, dstPath, cover))
 	    	{
-	    		System.out.println("copyFileOrDir() copyDir Failed:"+dstPath);
+	    		log.info("copyFileOrDir() copyDir Failed:"+dstPath);
 		    	return false;
 	    	}
 	    }
@@ -1620,7 +1626,7 @@ public class BaseFunction{
 	
 		if(dstFolder.isFile())
 		{
-			System.out.println(dstPath + " 不是目录！");
+			log.info(dstPath + " 不是目录！");
 			return false;
 		}
 
@@ -1639,7 +1645,7 @@ public class BaseFunction{
 				syncUpForAdd(srcParentPath,srcName,dstParentPath,dstName);
 			}
 		} catch (IOException e) {
-			System.out.println("syncUpFolder() Exception!");
+			log.info("syncUpFolder() Exception!");
 			e.printStackTrace();
 			return false;
 		}
@@ -1647,7 +1653,7 @@ public class BaseFunction{
 	}
     
     private void syncUpForAdd(String srcParentPath, String srcName, String dstParentPath, String dstName) throws IOException {
-    	System.out.println("syncUpForAddAndModify() srcParentPath:" + srcParentPath + " srcName:" + srcName + " dstParentPath:" + dstParentPath + " dstName:" + dstName );
+    	log.info("syncUpForAddAndModify() srcParentPath:" + srcParentPath + " srcName:" + srcName + " dstParentPath:" + dstParentPath + " dstName:" + dstName );
     	String srcPath = srcParentPath + srcName;
     	String dstPath = dstParentPath + dstName;
     	
@@ -1681,7 +1687,7 @@ public class BaseFunction{
 	}
 
 	private void syncUpForAddAndModify(String srcParentPath, String srcName, String dstParentPath, String dstName) throws IOException {
-    	System.out.println("syncUpForAddAndModify() srcParentPath:" + srcParentPath + " srcName:" + srcName + " dstParentPath:" + dstParentPath + " dstName:" + dstName );
+    	log.info("syncUpForAddAndModify() srcParentPath:" + srcParentPath + " srcName:" + srcName + " dstParentPath:" + dstParentPath + " dstName:" + dstName );
     	String srcPath = srcParentPath + srcName;
     	String dstPath = dstParentPath + dstName;
     	
@@ -1722,7 +1728,7 @@ public class BaseFunction{
 	}
 
 	private void syncUpForDelete(String srcParentPath, String srcName, String dstParentPath, String dstName) {
-    	System.out.println("syncUpForDelete() srcParentPath:" + srcParentPath + " srcName:" + srcName + " dstParentPath:" + dstParentPath + " dstName:" + dstName );
+    	log.info("syncUpForDelete() srcParentPath:" + srcParentPath + " srcName:" + srcName + " dstParentPath:" + dstParentPath + " dstName:" + dstName );
     	String srcPath = srcParentPath + srcName;
     	String dstPath = dstParentPath + dstName;
     	
@@ -1768,17 +1774,17 @@ public class BaseFunction{
             File oldfile=new File(oldFilePath);
             if(oldfile.exists() == false)
             {
-            	System.out.println("moveFile() oldFilePath:" + oldFilePath + " does not exist");
+            	log.info("moveFile() oldFilePath:" + oldFilePath + " does not exist");
             	return false;
             }
             
             File newfile=new File(newFilePath);
             if(newfile.exists()) //若在待转移目录下，已经存在待转移文件
             {
-            	System.out.println("moveFile() newFilePath:" + newFilePath + " already exists");
+            	log.info("moveFile() newFilePath:" + newFilePath + " already exists");
             	if(cover)//覆盖
                 {
-                	System.out.println("moveFile() 强制覆盖！");
+                	log.info("moveFile() 强制覆盖！");
                     return oldfile.renameTo(newfile);
                 }
                 else
@@ -1793,7 +1799,7 @@ public class BaseFunction{
         }
         else
         {
-        	System.out.println("moveFile() newFilePath:" + newFilePath + " is same to oldFilePath:" + oldFilePath);
+        	log.info("moveFile() newFilePath:" + newFilePath + " is same to oldFilePath:" + oldFilePath);
         	return true;
         }
     }
@@ -1867,7 +1873,7 @@ public class BaseFunction{
                 {
                     if(delDir(subDirPath) == false)
                     {
-                    	System.out.println("delDir() delete subDir Failed:" + subDirPath);
+                    	log.info("delDir() delete subDir Failed:" + subDirPath);
                     	return false;
                     }
                 }
@@ -1875,14 +1881,14 @@ public class BaseFunction{
                 {
                     if(tmp[i].delete() == false)
                     {
-                    	System.out.println("delDir() delete subFile Failed:" + subDirPath);
+                    	log.info("delDir() delete subFile Failed:" + subDirPath);
                     	return false;
                     }
                 }
             }
             if(dir.delete() == false)
             {
-            	System.out.println("delDir() delete Dir Failed:" + path);
+            	log.info("delDir() delete Dir Failed:" + path);
                 return false;
             }
         }
@@ -1902,7 +1908,7 @@ public class BaseFunction{
 	            	String subDirPath = path+"/"+tmp[i].getName();
 	                if(delFileOrDir(subDirPath) == false)
 	                {
-	                	System.out.println("delFileOrDir() delete subDir Failed:" + subDirPath);
+	                	log.info("delFileOrDir() delete subDir Failed:" + subDirPath);
 	                    return false;
 	                }
 	            }
@@ -1910,7 +1916,7 @@ public class BaseFunction{
             
             if(file.delete() == false)
             {
-            	System.out.println("delFileOrDir() delete Dir Failed:" + path);
+            	log.info("delFileOrDir() delete Dir Failed:" + path);
                 return false;
             }
         }
@@ -1925,7 +1931,7 @@ public class BaseFunction{
 	public String saveFile(MultipartFile srcFile, String path, String fileName)throws Exception {
 		if(fileName==null || "".equals(fileName))
 		{
-			System.out.println("saveFile() fileName is empty!");
+			log.info("saveFile() fileName is empty!");
 			return null;
 		}
 		
@@ -1933,7 +1939,7 @@ public class BaseFunction{
 		File forder1 = new File(path);
 		if(!forder1.exists())
 		{
-			System.out.println("saveFile() path:" + path + " not exists!");
+			log.info("saveFile() path:" + path + " not exists!");
 			forder1.mkdirs(); //创建目录
 		}
 		
@@ -1946,7 +1952,7 @@ public class BaseFunction{
     public static String getFileSuffix(String filePath)
     {
     	String suffix = filePath.substring(filePath.lastIndexOf(".") + 1);
-    	//System.out.println("getFileSuffix() " + suffix);
+    	//log.info("getFileSuffix() " + suffix);
     	return suffix.toLowerCase();
     }
     
@@ -2467,12 +2473,12 @@ public class BaseFunction{
 	protected static void printObject(String Head, Object obj)
 	{
 		String json = JSON.toJSONStringWithDateFormat(obj, "yyy-MM-dd HH:mm:ss");
-		System.out.println(Head + json);
+		log.info(Head + json);
 	}
 
 	protected static boolean isWinOS() {
 		String os = System.getProperty("os.name");
-		System.out.println("OS:"+ os);
+		log.info("OS:"+ os);
 		if(os.toLowerCase().startsWith("win")){
 			return true;
 		}

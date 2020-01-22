@@ -90,6 +90,32 @@
             <version>2.0.18</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-local</artifactId>
+            <version>4.2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>5.6.0.201912101111-r</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.janeluo</groupId>
+            <artifactId>ikanalyzer</artifactId>
+            <version>2012_u6</version>
+        </dependency>
+
+
+
 
 
 
@@ -141,6 +167,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
